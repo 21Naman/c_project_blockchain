@@ -65,5 +65,14 @@ block* create_block(char user_input[100], block* prev_block)
 }
 int main()
 {
+    printf("Enter sender: ");
+    char name[40];
+    scanf("%s", name);
+    printf("Enter amount: ");
+    int amt;
+    scanf("%d", &amt);
+    printf("Enter receiver: ");
+    char rname[40];
+    scanf("%s", rname);
     
 }
