@@ -33,12 +33,12 @@ void mine(struct block* temp)
 {
     //provided the block has index, data and prev hash. we obtain its nonce and current hash by mining.
     temp->nonce = 0;
-    int first_four = 0;
+    long long first_four = 0;
     while(first_four!=1111)
     {
         temp->nonce ++;
         temp->current_hash = hash_fn(temp->index, temp->nonce, temp->data, temp->prev_hash);
-        first_four = temp->current_hash / 1000000000000;
+        first_four = temp->current_hash / 1000000000000LL;
     }
 }
 block* genesis_block_creation()
@@ -70,7 +70,7 @@ void print_block(block* temp)
     printf("| data = %s                            |\n", temp->data);
     printf("| data = %lld                          |\n", temp->prev_hash);
     printf("| data = %lld                          |\n", temp->current_hash);
-    pritnf("----------------------------------------\n");
+    printf("----------------------------------------\n");
 }
 int main()
 {
