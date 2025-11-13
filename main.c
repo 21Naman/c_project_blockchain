@@ -14,7 +14,7 @@ long long hash_fn(int i, long long n, char d[100], long long p)
     long long hash_val = 0;
 
     char text[200] = {0};
-    char temp[50] = '\0';
+    char temp[50];
     sprintf(temp, "%d", i);
     strcat(text,temp);
     sprintf(temp, "%lld", n);
@@ -40,7 +40,6 @@ void mine(struct block* temp)
         temp->current_hash = hash_fn(temp->index, temp->nonce, temp->data, temp->prev_hash);
         first_four = temp->current_hash / 1000000000000;
     }
-    return;
 }
 block* genesis_block_creation()
 {
@@ -63,16 +62,47 @@ block* create_block(char user_input[100], block* prev_block)
     prev_block = new_block;
     return prev_block;
 }
+void print_block(block* temp)
+{
+    printf("----------------------------------------\n");
+    printf("| index = %d                           |\n", temp->index);
+    printf("| nonce = %lld                         |\n", temp->nonce);
+    printf("| data = %s                            |\n", temp->data);
+    printf("| data = %lld                          |\n", temp->prev_hash);
+    printf("| data = %lld                          |\n", temp->current_hash);
+    pritnf("----------------------------------------\n");
+}
 int main()
 {
-    printf("Enter sender: ");
-    char name[40];
-    scanf("%s", name);
-    printf("Enter amount: ");
-    int amt;
-    scanf("%d", &amt);
-    printf("Enter receiver: ");
-    char rname[40];
-    scanf("%s", rname);
-    
+    printf("DO YOU WANT TO SEND THE GUAP{(Y/N): ");
+    char ent;
+    scanf(" %c", &ent);
+    block* p = genesis_block_creation();
+    while(ent=='Y')
+    {
+        printf("Enter sender: ");
+        char name[40];
+        scanf("%s", name);
+        printf("Enter amount: ");
+        int amt;
+        scanf("%d", &amt);
+        printf("Enter receiver: ");
+        char rname[40];
+        scanf("%s", rname);
+        char inp[100];
+        sprintf(inp, "%s sent %s %d", name, rname, amt);
+        p = create_block(inp, p);
+        print_block(p);
+        printf("DO YOU WANT TO TRANSFER MORE MONEY(Y/N)\n");
+        scanf(" %c", &ent);
+    }
+    if(ent=='N')
+    {
+        printf("bye\n");
+    }
+    else
+    {
+        printf("Invalid input\n");
+    }
+    return 0;
 }
