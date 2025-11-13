@@ -72,6 +72,27 @@ void print_block(block* temp)
     printf("| Current =  %lld                      |\n", temp->current_hash);
     printf("----------------------------------------\n");
 }
+int verify_bal(block* temp, char person[40])
+{
+    int bal = 0;
+    char sender[40];
+    char receiver[40];
+    int amount;
+    while(temp->prev != NULL)
+    {
+        sscanf(temp->data, "%s sent %s %d", sender, receiver,&amount);
+        if(strcmp(receiver, person) == 0)
+        {
+            bal += amount;
+        }
+        else if(strcmp(sender, person)==0)
+        {
+            bal -= amount;
+        }
+        temp = temp->prev;
+    }
+    return bal;
+}
 int main()
 {
     printf("DO YOU WANT TO SEND THE GUAP{(Y/N): ");
@@ -91,14 +112,43 @@ int main()
         scanf("%s", rname);
         char inp[100];
         sprintf(inp, "%s sent %s %d", name, rname, amt);
-        p = create_block(inp, p);
-        print_block(p);
-        printf("DO YOU WANT TO TRANSFER MORE MONEY(Y/N)\n");
+        if(verify_bal(p, name)>=amt)
+        {
+            p = create_block(inp, p);
+            print_block(p);
+        }
+        else if(verify_bal(inp,p)==0)
+        {
+            printf("current balance is 0");
+        }
+        else
+        {
+            printf("Get your guap up before sending the $\n");
+        }
+        printf("DO YOU WANT TO TRANSFER MORE MONEY(Y/N): ");
         scanf(" %c", &ent);
     }
     if(ent=='N')
     {
-        printf("bye\n");
+        char entry;
+        printf("DO YOU WANT TO DEPOSIT MONEY(Y/N): ");
+        scanf(" %c",&entry);
+        if(entry=='Y')
+        {
+            int dep_amt;
+            char depositor[40];
+            printf("name of depositer: ");
+            scanf("%s", depositor);
+            printf("amount to be deposited: ");
+            scanf("%d", &dep_amt);
+            char t[20];
+            sprintf(t, "bank sent %s %d", depositor, &dep_amt);
+            p = create_block(t,p);
+        }
+        else if(entry=='N')
+        {
+            printf("bye\n");
+        }
     }
     else
     {
