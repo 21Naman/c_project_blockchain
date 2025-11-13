@@ -68,8 +68,8 @@ void print_block(block* temp)
     printf("| index = %d                           |\n", temp->index);
     printf("| nonce = %lld                         |\n", temp->nonce);
     printf("| data = %s                            |\n", temp->data);
-    printf("| data = %lld                          |\n", temp->prev_hash);
-    printf("| data = %lld                          |\n", temp->current_hash);
+    printf("| previous = %lld                      |\n", temp->prev_hash);
+    printf("| Current =  %lld                      |\n", temp->current_hash);
     printf("----------------------------------------\n");
 }
 int main()
