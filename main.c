@@ -63,7 +63,7 @@ block* create_block(char user_input[100], block* prev_block)
     prev_block = new_block;
     return prev_block;
 }
-int main()
-{
-    
+int main(){
+    printf("REST");
+    return 0;
 }
