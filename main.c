@@ -65,13 +65,13 @@ block* create_block(char user_input[100], block* prev_block)
 }
 void print_block(block* temp)
 {
-    printf("----------------------------------------\n");
-    printf("| index = %d                           |\n", temp->index);
-    printf("| nonce = %lld                         |\n", temp->nonce);
-    printf("| data = %s                            |\n", temp->data);
-    printf("| previous = %lld                      |\n", temp->prev_hash);
-    printf("| Current =  %lld                      |\n", temp->current_hash);
-    printf("----------------------------------------\n");
+    printf("--------------------------------------------\n");
+    printf("| index     = %-30d|\n", temp->index);
+    printf("| nonce     = %-30lld|\n", temp->nonce);
+    printf("| data      = %-30s|\n", temp->data);
+    printf("| previous  = %-30lld|\n", temp->prev_hash);
+    printf("| current   = %-30lld|\n", temp->current_hash);
+    printf("--------------------------------------------\n");
 }
 int verify_bal(block* temp, char person[40])
 {
@@ -123,11 +123,23 @@ void write_to_file(char data[100])
     fprintf(f,"%s\n",data);
     fclose(f);
 }
+char correct_input(char ent)
+{
+    if(ent==121)
+    {
+        return ent-32;
+    }
+    else if(ent==110)
+    {
+        return ent-32;
+    }
+}
 int main()
 {
     printf("DO YOU WANT TO SEND THE GUAP{(Y/N): ");
     char ent;
     scanf(" %c", &ent);
+    ent = correct_input(ent);
     block* p = genesis_block_creation();
     //create the stored blockchain before taking input.
     p = create_prev_chain(p);
@@ -152,7 +164,7 @@ int main()
         }
         else if(verify_bal(p,name)==0)
         {
-            printf("current balance is 0");
+            printf("current balance is 0\n");
         }
         else
         {
@@ -160,12 +172,14 @@ int main()
         }
         printf("DO YOU WANT TO TRANSFER MORE MONEY(Y/N): ");
         scanf(" %c", &ent);
+        ent = correct_input(ent);
     }
     if(ent=='N')
     {
         char entry;
         printf("DO YOU WANT TO DEPOSIT MONEY(Y/N): ");
         scanf(" %c",&entry);
+        ent = correct_input(ent);
         if(entry=='Y')
         {
             int dep_amt;    
