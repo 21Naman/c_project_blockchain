@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<limits.h>
 typedef struct block{
     int index;
     long long nonce;
@@ -74,6 +75,10 @@ void print_block(block* temp)
 }
 int verify_bal(block* temp, char person[40])
 {
+    if(strcmp(person, "bank")==0)
+    {
+        return INT_MAX;
+    }
     int bal = 0;
     char sender[40];
     char receiver[40];
@@ -93,12 +98,39 @@ int verify_bal(block* temp, char person[40])
     }
     return bal;
 }
+block* create_prev_chain(block* p)
+{
+    FILE *f = fopen("data.txt", "r");
+    char buffer[255];
+    if(f==NULL)
+    {
+        return p;
+    }
+    else
+    {
+        while(fgets(buffer, 255, f) != NULL)
+        {
+            buffer[strcspn(buffer, "\n")] = 0;
+            p = create_block(buffer, p);
+        }
+    }
+    fclose(f);
+    return p;
+}
+void write_to_file(char data[100])
+{
+    FILE *f = fopen("data.txt", "a");
+    fprintf(f,"%s\n",data);
+    fclose(f);
+}
 int main()
 {
     printf("DO YOU WANT TO SEND THE GUAP{(Y/N): ");
     char ent;
     scanf(" %c", &ent);
     block* p = genesis_block_creation();
+    //create the stored blockchain before taking input.
+    p = create_prev_chain(p);
     while(ent=='Y')
     {
         printf("Enter sender: ");
@@ -115,9 +147,10 @@ int main()
         if(verify_bal(p, name)>=amt)
         {
             p = create_block(inp, p);
+            write_to_file(inp);
             print_block(p);
         }
-        else if(verify_bal(inp,p)==0)
+        else if(verify_bal(p,name)==0)
         {
             printf("current balance is 0");
         }
@@ -135,15 +168,17 @@ int main()
         scanf(" %c",&entry);
         if(entry=='Y')
         {
-            int dep_amt;
+            int dep_amt;    
             char depositor[40];
             printf("name of depositer: ");
             scanf("%s", depositor);
             printf("amount to be deposited: ");
             scanf("%d", &dep_amt);
-            char t[20];
-            sprintf(t, "bank sent %s %d", depositor, &dep_amt);
+            char t[200];
+            sprintf(t, "bank sent %s %d", depositor, dep_amt);
             p = create_block(t,p);
+            write_to_file(t);
+            print_block(p);
         }
         else if(entry=='N')
         {
@@ -155,4 +190,4 @@ int main()
         printf("Invalid input\n");
     }
     return 0;
-}
+}   
