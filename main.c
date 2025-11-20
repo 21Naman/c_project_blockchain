@@ -133,6 +133,17 @@ char correct_input(char ent)
     {
         return ent-32;
     }
+    return ent;
+}
+void free_blockchain(block* head)
+{
+    block* temp;
+    while(head!=NULL)
+    {
+        temp = head;
+        head = head->prev;
+        free(temp);
+    }
 }
 int main()
 {
@@ -179,7 +190,7 @@ int main()
         char entry;
         printf("DO YOU WANT TO DEPOSIT MONEY(Y/N): ");
         scanf(" %c",&entry);
-        ent = correct_input(ent);
+        entry = correct_input(entry);
         if(entry=='Y')
         {
             int dep_amt;    
@@ -193,14 +204,17 @@ int main()
             p = create_block(t,p);
             write_to_file(t);
             print_block(p);
+            free_blockchain(p);
         }
         else if(entry=='N')
         {
+            free_blockchain(p);
             printf("bye\n");
         }
     }
     else
     {
+        free_blockchain(p);
         printf("Invalid input\n");
     }
     return 0;
