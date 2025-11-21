@@ -4,3 +4,8 @@ naman sent skand 10
 bank sent skand 90
 skand sent naman 10
 naman sent skand 10
+bank sent rajesh 100
+rajesh sent skand 100
+bank sent skand 500
+bank sent akand 500
+skand sent rajesh 200

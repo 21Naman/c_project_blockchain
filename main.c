@@ -73,6 +73,7 @@ void print_block(block* temp)
     printf("| current   = %-30lld|\n", temp->current_hash);
     printf("--------------------------------------------\n");
 }
+
 int verify_bal(block* temp, char person[40])
 {
     if(strcmp(person, "bank")==0)
@@ -145,77 +146,175 @@ void free_blockchain(block* head)
         free(temp);
     }
 }
+
+typedef struct{
+    char name[40];
+    char password[40];
+}registeration;
+
+
+
+int enter_data(registeration *r) {
+    char buffer[256];
+
+    FILE *fp = fopen("data.csv", "a+"); 
+    if (!fp) {
+        perror("Failed to open file");
+        return 1;
+    }
+    fseek(fp, 0, SEEK_SET);
+    if (fgets(buffer, sizeof(buffer), fp) == NULL) {
+
+        fprintf(fp, "Name,Password\n");
+    }
+
+
+    fseek(fp, 0, SEEK_END);
+    fprintf(fp, "%s,%s", r->name, r->password);
+
+    fclose(fp);
+    return 0;
+}
+
+int retrieve_data(char name1[],char password1[]){
+    FILE *fp = fopen("data.csv", "r");
+    if (!fp) {
+        perror("Failed to open file");
+        return 10;
+    }
+
+    char buffer[256];
+    int a=0;
+
+    fgets(buffer, sizeof(buffer), fp);
+
+    registeration r;
+
+    while (fgets(buffer, sizeof(buffer), fp)) {
+        if (sscanf(buffer, "%39[^,],%39[^,]", r.name, r.password) == 2) {
+            if (strcmp(r.name,name1)==0){
+                a=1;
+            if (strcmp(r.password,password1)==0){
+                a=2;
+            }break;
+        }
+        }}
+    fclose(fp);
+    return a;
+}
+
+registeration reg(){
+    registeration regis;
+
+    printf("Welcome new user!!");
+    printf("Enter the username: ");
+    scanf("%s",regis.name);
+    printf("Enter the password(private key): ");
+    scanf("%s",regis.password);
+    enter_data(&regis);
+    printf("New Account Registered\n");
+}
+char* login(char* name2){
+    char name1[40];
+    char name3[40];
+    char password2[40];
+    int q;
+    printf("Login into your account\n");
+    printf("Enter your username: ");
+    scanf("%s",name1);
+    strcpy(name2,name1);
+    strcpy(name3,name1);
+    printf("Enter the password: ");
+    scanf("%s",password2);
+    q=retrieve_data(name3,password2);
+    if (q==0){
+        printf("User not found\n");
+        return " ";
+    }else if(q==1){
+        printf("Incorrect password\n");
+        return " ";
+    }else{
+        printf("Welcome!!\n");
+        return name2;
+    }
+}
+
 int main()
-{
-    printf("DO YOU WANT TO SEND THE GUAP{(Y/N): ");
-    char ent;
-    scanf(" %c", &ent);
-    ent = correct_input(ent);
+{   
+    int cur;
+    char name2[40];
+    int choice;
+    printf("Do you want to 1.Register\n2.Login\n(1/2):");
+    scanf("%d",&choice);
+    if (choice==1){
+        reg();
+    }else if (choice==2){
+        //while(1){
+            strcpy(name2,login(name2));
+            //if (strcmp(name2," ")==0){
+                //continue;
+           // }else{
+           //     break;
+           // }
+       // }
+    }
+    printf("Welcome %s to main menu!!",name2);
+    while(1){
+    int n;
     block* p = genesis_block_creation();
-    //create the stored blockchain before taking input.
     p = create_prev_chain(p);
-    while(ent=='Y')
-    {
-        printf("Enter sender: ");
-        char name[40];
-        scanf("%s", name);
-        printf("Enter amount: ");
+    printf("Choose the options\n1.Deposit money in the account\n2.Money Transfer\n3.Check Balance\n4.View blockchain\n5.Exit\n:");
+    scanf("%d",&n);
+    if (n==1){
+        printf("%s",name2);
+        int dep_amt;
+        printf("Amount to be deposited: ");
+        scanf("%d", &dep_amt);
+        char t[100];
+        sprintf(t, "bank sent %s %d", name2, dep_amt);
+        p = create_block(t,p);
+        print_block(p);
+        write_to_file(t);
+    }else if(n==2){
+        printf("Enter the amount: ");
         int amt;
         scanf("%d", &amt);
-        printf("Enter receiver: ");
+        printf("Enter receiver's name: ");
         char rname[40];
         scanf("%s", rname);
         char inp[100];
-        sprintf(inp, "%s sent %s %d", name, rname, amt);
-        if(verify_bal(p, name)>=amt)
+        sprintf(inp, "%s sent %s %d", name2, rname, amt);
+        if(verify_bal(p, name2)>=amt)
         {
             p = create_block(inp, p);
             write_to_file(inp);
             print_block(p);
         }
-        else if(verify_bal(p,name)==0)
+        else if(verify_bal(p,name2)==0)
         {
-            printf("current balance is 0\n");
+            printf("Current balance is 0");
         }
         else
         {
             printf("Get your guap up before sending the $\n");
         }
-        printf("DO YOU WANT TO TRANSFER MORE MONEY(Y/N): ");
-        scanf(" %c", &ent);
-        ent = correct_input(ent);
-    }
-    if(ent=='N')
-    {
-        char entry;
-        printf("DO YOU WANT TO DEPOSIT MONEY(Y/N): ");
-        scanf(" %c",&entry);
-        entry = correct_input(entry);
-        if(entry=='Y')
-        {
-            int dep_amt;    
-            char depositor[40];
-            printf("name of depositer: ");
-            scanf("%s", depositor);
-            printf("amount to be deposited: ");
-            scanf("%d", &dep_amt);
-            char t[200];
-            sprintf(t, "bank sent %s %d", depositor, dep_amt);
-            p = create_block(t,p);
-            write_to_file(t);
-            print_block(p);
-            free_blockchain(p);
+    }else if (n==3){
+        int bal;
+        bal=verify_bal(p,name2);
+        printf("Your balance is:%d",bal);
+    }else if(n==4){
+        block* s = p;
+        while (s->prev != NULL){
+        print_block(s);
+        printf("                     |\n                     |\n                     v\n");
+
+        s = s->prev;
         }
-        else if(entry=='N')
-        {
-            free_blockchain(p);
-            printf("bye\n");
-        }
-    }
-    else
-    {
-        free_blockchain(p);
-        printf("Invalid input\n");
-    }
-    return 0;
-}   
+    }else if(n==5){
+        return 0;
+    }else{
+        printf("Enter correct input");
+}
+  
+}
+}
