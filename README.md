@@ -11,35 +11,34 @@ Proof-of-Work Mining: Each block must be mined with a nonce that produces a hash
 
 Transaction Management:
 
-    Deposit money from bank
+1 Deposit money from bank
 
-    Transfer money between users
+2 Transfer money between users
 
-    Check account balance
+3 Check account balance
 
-    View complete blockchain history
+4 View complete blockchain history
 
 Data Persistence: Transactions and user credentials are saved to files
 
 
-How It Works
-
-Blockchain Structure:
+HOW IT WORKS:
 
 Each block contains:
 
-Index: Position in the chain
+1 Index: Position in the chain
 
-Nonce: Value found through mining to create valid hash
+2 Nonce: Value found through mining to create valid hash
 
-Data: Transaction information (e.g., "Alice sent Bob 100")
+3 Data: Transaction information (e.g., "Alice sent Bob 100")
 
-Previous Hash: Hash of the previous block
+4 Previous Hash: Hash of the previous block
 
-Current Hash: Hash of this block (must start with 1111)
+5 Current Hash: Hash of this block (must start with 1111)
 
 
-Mining Algorithm:
+MINING ALGORITHM:
+
 The system uses a proof-of-work algorithm where, a hash is calculated from: index + nonce + data + previous_hash
 
 The nonce is incremented until the hash starts with "1111"
@@ -47,7 +46,7 @@ The nonce is incremented until the hash starts with "1111"
 This ensures computational work was performed to add each block
 
 
-Hash Function:
+HASH FUNCTION:
 
 Custom hash function that:
 
@@ -58,7 +57,7 @@ Applies polynomial rolling hash (multiplier of 31)
 Returns a 16-digit hash value
 
 
-Prerequisites:
+PREREQUISITES:
 
 GCC compiler or any C compiler
 
@@ -74,7 +73,7 @@ Running the Program
 
 
 
-First Time Setup:
+FIRST TIME SETUP:
 
 Choose option 1 to Register
 
@@ -83,17 +82,17 @@ Enter a username and password
 Login with your credentials
 
 
-Main Menu Options:
+MAIN MENU OPTIONS:
 
-Deposit Money: Add funds to your account from the bank
+1 Deposit Money: Add funds to your account from the bank
 
-Money Transfer: Send money to another user
+2 Money Transfer: Send money to another user
 
-Check Balance: View your current account balance
+3 Check Balance: View your current account balance
 
-View Blockchain: Display the entire blockchain history
+4 View Blockchain: Display the entire blockchain history
 
-Exit: Close the application
+5 Exit: Close the application
 
 
 Example Transaction Flow
@@ -105,7 +104,7 @@ Example Transaction Flow
 3. Check Balance: Alice has 500, Bob has 500
 
 
-File Structure:
+FILE STRUCTURE:
 
 data.csv: Stores user registration information (username, password)
 
@@ -114,7 +113,7 @@ data.txt: Stores all blockchain transactions for persistence
 main.c: Main source code
 
 
-Technical Details:
+TECHNICAL DETAILS:
 
 Balance Verification:
 
@@ -124,12 +123,10 @@ All transactions to a user increase balance
 
 All transactions from a user decrease balance
 
-Bank has unlimited balance (INT_MAX)
-
 Transfers are only allowed if sender has sufficient balance
 
 
-Data Persistence:
+DATA PERSISTENCE:
 
 On program restart:
 
