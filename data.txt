@@ -2,3 +2,4 @@ bank sent naman 100
 naman sent skand 50
 bank sent naman 50
 naman sent ram 20
+bank sent rahul 200

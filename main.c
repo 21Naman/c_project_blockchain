@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<limits.h>
+//defining the block
 typedef struct block{
     int index;
     long long nonce;
@@ -10,6 +11,7 @@ typedef struct block{
     long long current_hash;
     struct block* prev;
 }block;   
+//hash fnc
 long long hash_fn(int i, long long n, char d[100], long long p)
 {
     long long hash_val = 0;
@@ -42,6 +44,7 @@ void mine(struct block* temp)
         first_four = temp->current_hash / 1000000000000LL;
     }
 }
+//creating the initial block
 block* genesis_block_creation()
 {
     block* Genesis_block = malloc(sizeof(block));
@@ -57,6 +60,7 @@ block* genesis_block_creation()
     mine(Genesis_block);
     return Genesis_block;
 }
+//creating a new block
 block* create_block(char user_input[100], block* prev_block)
 {
     block* new_block = malloc(sizeof(block));
@@ -69,6 +73,7 @@ block* create_block(char user_input[100], block* prev_block)
     strcpy(new_block->data, user_input);
     new_block->prev_hash = prev_block->current_hash;
     new_block->prev = prev_block;
+    //mine the new block to find nonce and current hash
     mine(new_block);
     return new_block;
 }
@@ -82,6 +87,7 @@ void print_block(block* temp)
     printf("| current   = %-30lld|\n", temp->current_hash);
     printf("--------------------------------------------\n");
 }
+//verifying the balance by iterating through the block
 int verify_bal(block* temp, char person[40])
 {
     if(strcmp(person, "bank")==0)
@@ -109,6 +115,7 @@ int verify_bal(block* temp, char person[40])
     }
     return bal;
 }
+//creating the previous chain from file i/o
 block* create_prev_chain(block* p)
 {
     FILE *f = fopen("data.txt", "r");
@@ -128,6 +135,7 @@ block* create_prev_chain(block* p)
     fclose(f);
     return p;
 }
+//saving the data
 void write_to_file(char data[100])
 {
     FILE *f = fopen("data.txt", "a");
@@ -166,7 +174,7 @@ typedef struct{
     char name[40];
     char password[40];
 }registeration;
-
+//registerign the user data
 int enter_data(registeration *r) {
     char buffer[256];
 
@@ -186,7 +194,7 @@ int enter_data(registeration *r) {
     fclose(fp);
     return 0;
 }
-
+//retireving name and password
 int retrieve_data(char name1[], char password1[]) {
     FILE *fp = fopen("data.csv", "r");
     if (!fp) {
@@ -224,7 +232,7 @@ int retrieve_data(char name1[], char password1[]) {
 void reg()
 {
     registeration regis;
-    printf("Welcome new user!!");
+    printf("Welcome new user!!\n");
     printf("Enter the username: ");
     scanf("%39s",regis.name);
     printf("Enter the password: ");
@@ -260,7 +268,7 @@ char* login(char* name2)
 }
 
 int main()
-{
+{//main menu
     char name2[40];
     int choice;
     printf("Do you want to\n1.Register\n2.Login\n(1/2): ");
@@ -299,7 +307,7 @@ int main()
         printf("Choose the options\n1.Deposit money in the account\n2.Money Transfer\n3.Check Balance\n4.View blockchain\n5.Exit\n:");
         scanf("%d",&n);
         if (n==1)
-        {
+        {//bank transfer to user
             int dep_amt;
             printf("Amount to be deposited: ");
             scanf("%d", &dep_amt);
@@ -311,7 +319,7 @@ int main()
             printf("Deposit successful\n");
         }
         else if(n==2)
-        {
+        {//money transfer
             printf("Enter the amount: ");
             int amt;
             scanf("%d", &amt);
@@ -321,7 +329,7 @@ int main()
             char inp[100];
             sprintf(inp, "%s sent %s %d", name2, rname, amt);
             if(verify_bal(p, name2)>=amt)
-            {
+            {//creating new block and writng to file
                 p = create_block(inp, p);
                 write_to_file(inp);
                 print_block(p);
@@ -337,13 +345,13 @@ int main()
             }
         }
         else if (n==3)
-        {
+        {//checking the balance
             int bal;
             bal=verify_bal(p,name2);
             printf("Your balance is:%d\n",bal);
         }
         else if(n==4)
-        {
+        {//printing the whole chain by iterating
             block* s = p;
             while (s->prev != NULL)
             {
@@ -359,7 +367,7 @@ int main()
         }
         else
         {
-            printf("Enter correct input");
+            printf("Enter correct input\n");
         }
     }
 
